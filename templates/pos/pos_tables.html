@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tables</title>
+</head>
+<body>
+    {% include 'nav/nav_pos.html' %}
+    <div class="box">
+        <div class="liv" > <h2> Open Tables </h2></div>
+        <div class="liv"> <h2> Avaliable Tables </h2></div>
+        <div class="liv">
+             <div class="tabl">
+                {% for ot in open %}
+                <a class="chot" href="{% url 'pos_b_t' pi=ot.table_id  pn=ot.table_name %}" >{{ot.table_name}}</a>
+                {% endfor %}
+             </div> 
+        </div>
+        <div class="liv"> 
+            <div class="tabl">
+                {% for at in av %}
+                <a class="chot" href="{% url 'pos_b_t' pi=at.table_id  pn=at.table_name %}" >{{at.table_name}}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
+<style>
+    #tables_pos{
+        font-weight: bolder;
+        font-size: xx-large;
+    }
+    body{
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: large;
+    }
+    .tabl{
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-left: 6%;
+       
+    }
+    .chot{
+        text-align: center;
+        border: solid rgb(29, 255, 180) 3px;
+        border-radius: 15px;
+        text-decoration: none;
+        font-size: larger;
+        color: black;
+        margin: 2%;
+        width: 25%;
+        padding: 2%;
+        
+    }
+    .box{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: 100%;
+        text-align: center;
+    }
+    .liv{
+        width: 50%;
+    }
+    ::-webkit-scrollbar{
+        width: 0.3em;
+        
+      }
+      ::-webkit-scrollbar-track{
+        background: white;
+      }
+      ::-webkit-scrollbar-thumb{
+        background: rgb(176, 176, 176);
+        
+      }
+</style>

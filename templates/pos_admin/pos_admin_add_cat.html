@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'pos_admin.css' %}">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+  {% include 'nav/nav_pos_admin.html' %}
+    {% for msg in messages %}
+    <div class="alert alert-success" style="float: left; width:50%;"><strong>{{msg}}</strong> Don't refresh the page, use navigation bar.<div onclick="parentElement.style.display = 'none';" style="color: red; float: right;">&#10006;</div></div>
+    {% endfor %}
+    <h1 style="display: flex; justify-content: center;  font-family: 'Overpass', sans-serif; font-size: 300%;">Add category</h1>
+    <div >
+        <form action="" method="post" class="tab">
+        {% csrf_token %}
+        <div class="input-group" style="margin: 5%;">
+            <span class="input-group-text">User Name</span>
+            <input type="text" class="form-control" value="{{user}}" readonly>
+         </div>
+         <div class="input-group" style="margin: 5%;">
+            <span class="input-group-text">Category name</span>
+            <input type="text" name="name" class="form-control" required>
+         </div>
+         <input type="submit" class="ins">
+        </form>
+    </div>
+</body>
+</html>

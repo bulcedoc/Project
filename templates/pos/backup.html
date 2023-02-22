@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pos Home</title>
+</head>
+<body>
+    <div class="main">
+        <div class="cate">
+            <div class="c">
+             {% for cot in categ %}
+             <div class="ct" id="{{cot.cat_id}}" onclick="selo(this)">{{cot.cat_name}}</div>
+             {% endfor %}
+            </div>
+            <div id="show">
+              <div id="dim">
+              {% for product in products%}
+               <div id="ct" class="{{product.p_cat_id}}" onclick="tick(this)" style="display: none;">
+                <input type="hidden" value="{{product.p_id}}">
+                {{product.p_name}}
+               </div>
+               {% endfor %}
+              </div>
+            </div>
+        </div>
+        <div id="cart">bill</div>
+    </div>
+</body>
+</html>
+<style>
+    body{
+        margin: 0;
+        
+    }
+    .main{
+        display: flex;
+        flex-direction: row; 
+        
+        height: 500px;
+       
+        
+    }
+    .cate{
+        display: flex;  
+        width: 70%; 
+        
+        
+        
+    }
+    .cart{
+      width: 30%;
+        display: flex;
+        background-color: greenyellow;  
+      
+        
+    }
+    .c{
+      display: block;
+        width: 30%;
+       overflow: scroll;
+
+        
+        
+    }
+    #show{
+      
+      width: 70%;
+      
+      border: solid black 2px;
+      overflow: scroll;
+    
+    }
+  
+  
+   #dim{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;    
+    
+   }
+    .ct{
+      display: flex;
+        padding: 8%;
+        background-color: aliceblue;
+        border: solid black 1px;
+      
+        margin: 1%;
+    }
+    #ct{
+      display: flex;
+        padding: 8%;
+        background-color: aliceblue;
+        border: solid black 1px;
+      
+        margin: 1%;
+    }
+    .adds{
+      border:none;
+    }
+    
+   
+</style>
+<script>
+    function selo(element){
+     let c = element.id
+     console.log(c)
+     let h = document.getElementById("dim").childNodes;
+     
+     let i = 1
+     while(i < h.length){
+      h[i].style.display = "none"; 
+      i=i+2;  
+    }
+    console.log("okay")
+     let d = document.getElementsByClassName(c)
+     let j = 0
+     while(j < d.length){
+      d[j].style.display = "block"; 
+      j=j+1;  
+    }
+     window.scrollTo(0,0)
+    }
+    function tap(element)
+   { 
+    c = element.innerHTML
+    let d = document.getElementById('cart')
+    ch = document.createElement('div')
+    ch.innerHTML = '<div id ="m4" ><input type="text" class="adds" value='+c+'  readonly><input type="number" id="nu" value="1" min="1"><button id="de" onclick="delo(this)">Remove</button></div>'
+    d.appendChild(ch)
+    element.style.display = "none"
+         }
+         function delo(delement)
+          {
+    let dt = document.getElementById('cart')
+    delement.parentElement.remove()
+    }
+</script>

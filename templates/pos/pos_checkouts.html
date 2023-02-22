@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkouts</title>
+</head>
+<body>
+    {% include 'nav/nav_pos.html' %}
+    <div class="alert alert-info" style="width: 80%;">After you select the table to check-out you can not get back to this page until you settle the table billing.<br>Unfollowing the these rules can cause of duplicate/re-submission of sales data.</div>
+    <br>
+    <h2>Select a Table to proceed for Check-out</h2><br>
+    <div class="tabl">
+        {% for check in checkouts %}
+          <a href="{% url 'pos_checkout' check.table_id  %}" class="chot">{{check.table_name}}</a>
+        {% endfor %}
+      </div>
+    
+</body>
+</html>
+<style>
+    #checkouts_pos{
+        font-weight: bolder;
+        font-size: 30px;
+    }
+    body{
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: large;
+    }
+    .tabl{
+        width: 80%;
+        height: 300px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+         align-items: center;
+         justify-content: center;
+         overflow-y: scroll;
+    }
+    .chot{
+        text-align: center;
+        border: solid rgb(29, 255, 180) 3px;
+        border-radius: 15px;
+        text-decoration: none;
+        font-size: larger;
+        color: black;
+        width: 25%;
+        padding: 2%;
+        margin: 1%;
+    }
+    ::-webkit-scrollbar{
+        width: 0.3em;
+        
+      }
+      ::-webkit-scrollbar-track{
+        background: white;
+      }
+      ::-webkit-scrollbar-thumb{
+        background: rgb(176, 176, 176);
+        
+      }
+</style>
+

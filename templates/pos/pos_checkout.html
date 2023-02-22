@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bill Settlement</title>
+</head>
+<body>
+    {% include 'nav/nav_pos.html' %}
+{% for msg in messages %}
+    <div class="alert alert-success" style="float: left; width:50%;">{{msg}}<div onclick="parentElement.style.display = 'none';" style="color: red; float: right;">&#10006;</div></div>
+    {% endfor %}
+<form action="" method="post">
+  {% csrf_token %}
+  <input type="text" value="{{bill}}" name="bill"readonly>
+  <input type="text" value="{{tab}}" name="tab"readonly>
+  <input type="text" value="{{pros_len}}" name="pros_len"readonly>
+  <input type="text" value="{{sum}}" name="sum"readonly>
+  <select name="pay" id="pay">
+      <option value="upi">Upi</option>
+      <option value="cash">Cash</option>
+      <option value="card">Card</option>
+  </select>
+  <input type="submit">
+</form>
+  <script type="text/javascript">
+    window.history.forward();
+    function noBack() {
+        window.history.forward();
+    }
+</script>

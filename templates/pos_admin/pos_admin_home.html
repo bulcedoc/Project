@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'pos_admin.css' %}">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+  {% include 'nav/nav_pos_admin.html' %}
+    {% for msg in messages %}
+    <div class="alert alert-success" style="float: left; width:50%;">{{msg}}<div onclick="parentElement.style.display = 'none';" style="color: red; float: right;">&#10006;</div></div>
+    {% endfor %}
+    <h1 style="display: flex; justify-content: center;  font-family: 'Overpass', sans-serif; font-size: 300%;">Admin Dashboard</h1>
+    <div class="tab">
+        <div class="card" style="width: 20rem; margin: 5%;">
+            <div class="card-body">
+              <h5 class="card-title" style="font-size: x-large;"><strong>Add Category</strong></h5>
+              <p class="card-text">Here you can add the category, specific set of products</p>
+              <a href="{% url 'pos_admin_add_cat' %}" class="btn btn-primary" style="background-color:   rgb(29, 255, 180); color:  black; border: none; font-size: large;">Go add category</a>
+            </div>
+          </div>
+          <div class="card" style="width: 20rem; margin: 5%;">
+            <div class="card-body">
+              <h5 class="card-title" style="font-size: x-large;"><strong>Add Product</strong></h5>
+              <p class="card-text">Here you can add the products and prices of products.</p>
+              <a href="{% url 'pos_admin_add_product' %}" class="btn btn-primary" style="background-color:   rgb(29, 255, 180); color:  black; border: none; font-size: large;">Go add product</a>
+            </div>
+          </div>
+          <div class="card" style="width: 20rem; margin: 5%;">
+            <div class="card-body">
+              <h5 class="card-title" style="font-size: x-large;"><strong>Add Table</strong></h5>
+              <p class="card-text">Here you can add tables present in your bussiness.</p>
+              <a href="{% url 'pos_admin_add_table' %}" class="btn btn-primary" style="background-color:   rgb(29, 255, 180); color:  black; border: none; font-size: large;">Go add table</a>
+            </div>
+          </div>
+          
+    </div>
+    <div class="alert alert-info">For any kind updating, deleting, changing printer data contact supplier.<br>These features are under development.</div>
+</body>
+</html>
+<style>
+    body{
+        font-family: 'Overpass';
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+        }
+        .ins {
+           
+            margin: 2%;
+            
+          border-radius: 2%;  
+        width: 80%;
+        padding: 2%;
+        text-decoration: none;
+        color: black;
+        border: none;
+        font-size: larger;
+        background-color:   rgb(29, 255, 180);
+        }
+        .tab{
+            display: flex;
+            flex-direction: row;
+            width: 60%;
+            margin: 2%;
+        }
+</style>

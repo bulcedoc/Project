@@ -1,0 +1,22 @@
+<div class="topbar">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'main.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <h1 class="Lo">SADADA.in</h1>
+    <div class="navbar"></div>
+    <a href="{% url 'pos_home' %}" class="nave" id="home_pos">Home</a>
+    <a href="{% url 'pos_tables' %}" class="nave" id="tables_pos">Tables</a>
+    <a href="{% url 'pos_billing' %}" class="nave" id="billing_pos">Billing</a>
+    <a href="{% url 'pos_checkouts' %}" class="nave" id="checkouts_pos">CheckOuts</a>
+    <div class="nave">
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"style="background-color: rgb(68, 202, 255); color: black; border: none; font-size: x-large;">
+          Actions
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'pos_admin_login' %}">Go to Admin</a></li>
+          <li><a class="dropdown-item" href="{% url 'pos_logout' %}" style="color: red;">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+</div>
+

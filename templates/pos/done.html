@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ooops....</title>
+</head>
+<body>
+    {% include 'nav/nav_pos.html' %}
+{% for msg in messages %}
+    <div class="alert alert-success" style=" width:40%; margin-left: 30%;">{{msg}}<div onclick="parentElement.style.display = 'none';" style="color: red; float: right;">&#10006;</div></div>
+    {% endfor %}
+{% load static %}
+<img src="{% static 'check-circle.svg' %}" alt="No Data" style="width:10%;margin-left:45%; margin-top: 2%;">
+<h2 style="text-align:center;margin:5%;">Billing has been done.</h2>
+<a class="ins" href="{% url 'pos_billing' %}" >Go to Billing</a>
+<style>
+  .ins {
+            margin: 2%;
+          border-radius: 2%;  
+        width: 40%;
+        padding: 1%;
+        text-decoration: none;
+        color: black;
+        border: none;
+        font-size: larger;
+        background-color:   rgb(29, 255, 180);
+        margin-left: 45.5%;
+        }
+</style>
+</body>

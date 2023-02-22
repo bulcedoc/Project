@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;600&display=swap" rel="stylesheet">
+
+    <title>User Registration</title>
+</head>
+<body>
+    {% for msg in messages %}
+    <div class="alert alert-success" style="float: left; width:50%;">{{msg}}<div onclick="parentElement.style.display = 'none';" style="color: red; float: right;">&#10006;</div></div>
+    {% endfor %}
+    <h1 style="margin: 1%;">Pos Customer Registration</h1>
+    <form action="" method="post" style="display: flex; flex-direction: column; justify-content: center; align-items: center;" >
+        {% csrf_token %}
+        <label for="name" class="lab">Name of customer</label>
+        <input type="text" class="in" name="name">
+        <label for="shop" class="lab">Name of business</label>
+        <input type="text" class="in" name="business">
+        <label for="mob" class="lab">Mobile</label>
+        <input type="text" class="in" name="mobile">
+        <label for="mob" class="lab">Email</label>
+        <input type="email" class="in" name="email">
+        <label for="usr" class="lab">Prefered Username</label>
+        <input type="text" class="in" name="username">
+        <label for="pass" class="lab">Prefered Password</label>
+        <input type="text" class="in" name="password">
+        <label for="kip" class="lab">Kitchen IP</label>
+        <input type="text" class="in" name="kip">
+        <label for="cip" class="lab">Counter IP</label>
+        <input type="text" class="in" name="cip">
+        <input type="submit" class="ins">  
+    </form>
+    <style>
+    body{
+    margin-top: 5%;
+    font-family: 'Overpass';
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    }
+    .lab{
+        font-size: large;
+        display: flex;
+    }
+    .in{
+        margin: 2%;
+        font-size: x-large;
+        display: flex;
+        border-radius: 3%;
+        padding: 1%;
+    
+    }
+    .ins {
+        margin: 2%;
+      border-radius: 2%;  
+    width: 100%;
+    padding: 3%;
+    text-decoration: none;
+    color: black;
+    border: none;
+    font-size: larger;
+    background-color:   rgb(68, 202, 255);  
+    }
+
+    </style>
+</body>
+</html>

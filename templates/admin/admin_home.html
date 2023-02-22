@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% for msg in messages %}
+    <div class="alert alert-success" style="float: left; width:50%;">{{msg}}<div onclick="parentElement.style.display = 'none';" style="color: red; float: right;">&#10006;</div></div>
+
+    {% endfor %}
+    <a href="{% url 'admin_reg' %}" class="ins">New Pos User Register</a>
+    <a href="{% url 'admin_logout' %}" class="ins-r">Logout</a>
+    <style>
+            body{
+    margin-top: 5%;
+    font-family: 'Overpass';
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    }
+ 
+    .ins {
+        margin: 2%;
+      border-radius: 2%;  
+    width: 100%;
+    padding: 3%;
+    text-decoration: none;
+    color: black;
+    border: none;
+    font-size: larger;
+    background-color:   rgb(68, 202, 255);  
+    }
+    .ins-r {
+        margin: 2%;
+      border-radius: 2%;  
+    width: 100%;
+    padding: 3%;
+    text-decoration: none;
+    color: black;
+    border: none;
+    font-size: larger;
+    background-color:   rgb(255, 0, 0);  
+    }
+    </style>
+</body>
+</html>
