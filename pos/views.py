@@ -15,16 +15,16 @@ def pos_login(request):
       user = authenticate(request=None, username =username, password = password)
       if user is not None:
         pik = Profile.objects.get(pro_usr = user.id)
-        if pik.live == False:
-         login(request,user)
-         pik.live = True
-         pik.save()
-         messages.error(request,'logged in as '+user.first_name+' for '+user.last_name+' billling.')
-         response = redirect('pos_billing')
-         return response
-        else:
-         messages.error(request,'you have already logged in another device')
-         return render(request, 'pos/pos_login.html')
+        #if pik.live == False:
+        login(request,user)
+         #pik.live = True
+         #pik.save()
+         #messages.error(request,'logged in as '+user.first_name+' for '+user.last_name+' billling.')
+        response = redirect('pos_billing')
+        return response
+        #else:
+         #messages.error(request,'you have already logged in another device')
+         #return render(request, 'pos/pos_login.html')
       else:
          messages.error(request,'Wrong credentials')
          return render(request, 'pos/pos_login.html')
