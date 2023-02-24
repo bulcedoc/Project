@@ -59,13 +59,12 @@ class Cart(models.Model):
         return self.cart_table_id
 
 class Sale(models.Model):
+    sale_id = models.AutoField(primary_key=True)
     sale_product_id = models.ForeignKey(Product,verbose_name="Product", on_delete=models.CASCADE)
-    sale_product_name = models.CharField(max_length=100)
     sale_user = models.ForeignKey(User,verbose_name="User", on_delete=models.CASCADE)
-    sale_year = models.IntegerField()
-    sale_month = models.IntegerField()
-    sale_day = models.IntegerField()
+    sale_date = models.CharField(max_length=50)
     sale_bill = models.IntegerField()
+    sale_product_name = models.CharField(max_length=100)
     sale_quantity = models.IntegerField()
     sale_price = models.IntegerField()
     def __str__(self):

@@ -25,13 +25,13 @@
             <span class="input-group-text">Product name</span>
             <input type="text" name="name" class="form-control" required>
          </div>
-         <select name="fav" class="form-select" style="margin: 5%;">
-            <option selected>Is it favorite</option>
+         <select name="fav" class="form-select" style="margin: 5%;" required>
+            <option value="">Is it favorite</option>
             <option value="1" >Yes, Favorite</option>
             <option value="2">Not a favorite</option>
          </select>
-         <select name="cat" class="form-select" style="margin: 5%;">
-            <option selected>Select category</option>
+         <select name="cat" class="form-select" style="margin: 5%;" required>
+            <option value="">Select category</option>
             {% for c in cat %}
             <option value="{{c.category_id}}" >{{c.category_name}}</option>
             {% endfor %}
