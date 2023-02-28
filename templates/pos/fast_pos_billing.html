@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;600&display=swap" rel="stylesheet">
+    <title>Billing Dashboard</title>
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+    {% load static %}
+</head>
+<body>
+  {% include 'nav/nav_pos.html' %}
+  
+  <script>
+    
+    {% for msg in messages %}
+    alertify.set('notifier','position', 'top-right');
+    alertify.success('{{msg}}');
+     {% endfor %}
+  </script>
+  
+    <div class="main">
+        <div class="cate">
+            <div class="c">
+             {% for cot in categ %}
+             
+             <div class="ct" id="{{cot.category_id}}" onclick="selo(this)">{{cot.category_name}}</div>
+             {% endfor %}
+            </div>
+            <div id="show">
+              <div id="dim">
+              {% for product in products%}
+               <div id="ct" class="{{product.product_category_id}}" onclick="tick(this)" style="display: none;">
+                <input type="hidden" value="{{product.product_id}}">
+                {{product.product_name}}
+               </div>
+               {% endfor %}
+              </div>
+            </div>
+        </div>
+        <form action="" method="post" id="cart">
+          {% csrf_token %}
+          <span class="input-group-text">Billing as Fast Bill</span>
+             
+          </select>
+          <div id="cartography"></div>
+          <div class="input-group" style="margin: 1%;">
+            <span class="input-group-text">Directions</span>
+            <input type="text" name="direc" class="form-control">
+         </div>
+         <div style="display: flex; flex-direction: row; justify-content: center;">
+          <div onclick="window.location.reload();" class="inr">Refresh</div>
+          <input type="submit" class="ins">
+        </div>
+        </form>
+    </div>
+</body>
+</html>
+<style>
+  #billing_pos{
+     
+      font-size: 30px;
+  }
+</style>
+<style>
+    body{
+        margin: 0;
+        text-align: center;
+        font-size: large;
+    }
+    ::-webkit-scrollbar{
+      width: 0.3em;
+      
+    }
+    ::-webkit-scrollbar-track{
+      background: white;
+    }
+    ::-webkit-scrollbar-thumb{
+      background: rgb(176, 176, 176);
+      
+    }
+    .carted{
+        
+        border: solid rgb(29, 255, 180) 3px;
+        border-radius: 15px;
+        text-decoration: none;
+        font-size: larger;
+        color: black;
+        margin: 2%;
+        width: 25%;
+        padding: 2%;
+    }
+    .main{
+        display: flex;
+        flex-direction: row; 
+        height: 600px;
+       
+        
+    }
+    .cate{
+        display: flex;  
+        width: 70%; 
+        
+        
+        
+    }
+    .c{
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;   
+        width: 30%;
+        margin: 1%;
+        padding: 1%;
+       overflow: scroll;
+       
+       
+        
+        
+    }
+    #show{
+      
+      width: 70%;
+      margin: 1%;
+      
+      overflow: scroll;
+    
+    }
+  
+  
+   #dim{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;    
+    
+   }
+    .ct{
+        
+        text-align: center;
+        border: solid rgb(68, 202, 255) 4px;
+        border-radius: 15px;
+        font-size: larger;
+        color: black;
+        margin: 2%;
+        width: 100%;
+        padding: 5%;
+    }
+    #ct{
+        text-align: center;
+        border: solid rgb(29, 255, 180) 4px;
+        border-radius: 15px;
+        font-size: larger;
+        color: black;
+        margin: 2%;
+        padding: 2%;
+    }
+    .adds{
+      border:none;
+    }
+   
+  #cart{
+          display: flex;
+          flex-direction: column;
+          overflow-y: scroll;
+          overflow-x: hidden;
+          width: 35%;
+          margin: 1%;
+          
+      }
+      .cart_items{
+          display: grid;
+          grid-template-columns: 50% 7% 20% 7% 7%;
+          padding: 1%;
+      
+      }
+      .minus{
+          display: flex;
+      }
+      .minus-1{
+          display: flex;
+          margin-left: 80%;
+          padding-top: -80%;
+      }
+      .range{
+          display: flex;
+          margin: 5%;
+          margin-right: 15%;
+          border: none;
+          text-align: center;
+          
+      }
+      .ins {
+            margin: 2%;
+          border-radius: 2%;  
+        width: 40%;
+        padding: 1%;
+        text-decoration: none;
+        color: black;
+        border: none;
+        font-size: larger;
+        background-color:   rgb(29, 255, 180);
+        }
+        .inr{
+          margin: 2%;
+          border-radius: 2%;  
+        width: 40%;
+        padding: 1%;
+        text-decoration: none;
+        color: black;
+        border: none;
+        font-size: larger;
+        background-color:   rgb(253, 240, 55);
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+   
+</style>
+<script>
+    function selo(element){
+     let c = element.id
+     let h = document.getElementById("dim").childNodes;
+     
+     let i = 1
+     while(i < h.length){
+      h[i].style.display = "none"; 
+      i=i+2;  
+    }
+     let d = document.getElementsByClassName(c)
+     let j = 0
+     while(j < d.length){
+      d[j].style.display = "block"; 
+      j=j+1;  
+    }
+     window.scrollTo(0,0)
+    }
+    function tap(element)
+   { 
+    c = element.innerHTML
+    let d = document.getElementById('cartography')
+    ch = document.createElement('div')
+    ch.innerHTML = '<div id ="m4" ><input type="text" class="adds" value='+c+'  readonly><input type="number" id="nu" value="1" min="1"><button id="de" onclick="delo(this)">Remove</button></div>'
+    d.appendChild(ch)
+    element.style.display = "none"
+         }
+         function delo(delement)
+          {
+    let dt = document.getElementById('cartography')
+    delement.parentElement.remove()
+    }
+    function tick(ele){
+        cart = document.getElementById("cartography")
+        d = ele.textContent
+        c = ele.children[0].value
+        let a = document.createElement('div')
+        a.innerHTML = ' <div class="cart_items"><input name="prod" type="hidden" value="'+c+'">'+d+'<img class="minus"onclick="de(this)"src="{% static 'dash-circle.svg' %}" alt="sub" width="70%"><input class="range" name="quan" type="number" value="1" min="1" style="margin:0;"><img class="minus" onclick="inc(this)" src="{% static 'plus-circle.svg' %}" alt="add" width="70%"><img class="minus-1"onclick="delo(this)" src="{% static 'trash3.svg' %}" alt="delete" width="70%"></div>'
+        cart.append(a)
+        ele.onclick = "none"
+        ele.style.opacity = "0.4"
+    }
+    function de(elem){
+      c = elem.nextSibling.value
+      if(c>1){
+      elem.nextSibling.value = parseInt(c)-1
+       }
+       c = elem.nextSibling.value
+      console.log(c)
+    
+    }
+    function inc(elem){
+      c = elem.previousSibling.value
+      if(c>=1){
+      elem.previousSibling.value = parseInt(c)+1
+       }
+       c = elem.previousSibling.value
+      console.log(c)
+    
+    }
+    function delo(delement)
+    {
+        delement.parentElement.remove()   
+    }
+</script>

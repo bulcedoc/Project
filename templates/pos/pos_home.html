@@ -5,16 +5,99 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sadada POS Home</title>
+    {% load static %}
 </head>
 <body>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['bar']});
+      google.charts.setOnLoadCallback(drawStuff);
+
+      function drawStuff() {
+        var data = new google.visualization.arrayToDataTable({{pay|safe}});
+
+        var options = {
+          title: 'Payment Methods',
+          width: 900,
+          legend: { position: 'none' },
+          chart: { title: 'Payment Methods',
+                   subtitle: "Based on today's data" },
+          bars: 'horizontal', // Required for Material Bar Charts.
+          axes: {
+            x: {
+              0: { side: 'top', label: 'Sale Value'} // Top x-axis.
+            }
+          },
+          bar: { groupWidth: "90%" }
+        };
+
+        var chart = new google.charts.Bar(document.getElementById('top_x_div'));
+        chart.draw(data, options);
+      };
+      google.charts.load('current', {packages: ['corechart', 'line']});
+google.charts.setOnLoadCallback(drawBasic);
+
+function drawBasic() {
+
+      var data = new google.visualization.DataTable();
+      data.addColumn('number', 'X');
+      data.addColumn('number', 'Dogs');
+
+      data.addRows({{gr|safe}});
+
+      var options = {
+        hAxis: {
+          title: 'Time'
+        },
+        vAxis: {
+          title: 'Popularity'
+        }
+      };
+
+      var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+
+      chart.draw(data, options);
+    }
+    </script>
     {% include 'nav/nav_pos.html' %}
-    <h1>This is Home</h1>
-    {{data}}
+    <div class="tab">
+        <div class="card" >
+            <img class="card-img-top" src="..." alt="Card image cap">
+            <div class="card-body">
+              <h5 class="card-title">Card title</h5>
+              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <a href="{% url 'fast_pos_billing' %}" class="btn btn-primary">Go somewhere</a>
+            </div>
+          </div>
+    <div id="top_x_div" ></div>
+    <div class="card" style="margin-top: -5%; width: 35%;">
+        <ul class="list-group list-group-flush" >
+          <li class="list-group-item"><img src="{% static 'shop-window.svg' %} " style="width: 8%;" > <strong>Business name : </strong>{{user.last_name}}</li>
+          <li class="list-group-item"><img src="{% static 'calendar-check.svg' %} " style="width: 8%;" > <strong>Date: </strong>{{date}}</li>
+          <li class="list-group-item"><img src="{% static 'bank.svg' %} " style="width: 8%;" > <strong>Today's Sales Data</strong></li>
+          <li class="list-group-item"><img src="{% static 'cash-coin.svg' %}" style="width: 8%;">  <strong>Total Settled Amount : </strong>{{tSale}}</li>
+          <li class="list-group-item"><img src="{% static 'receipt.svg' %}" style="width: 8%;">  <strong>No.of Bills : </strong>{{nBills.0.bill_date__count}}</li>
+          <li class="list-group-item"><img src="{% static 'receipt.svg' %}" style="width: 8%;">  <strong>Status : </strong>Active</li>
+        </ul>
+    </div>  
+    </div>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <div id="chart_div" style="width: 50%;"></div>
+        
+    
 </body>
 </html>
 <style>
     #home_pos{
         
         font-size: 30px;
+    }
+    body{
+        
+        font-size: large;
+    }
+    .tab{
+        display: grid;
+        grid-template-columns: 10% 40% 30%;
     }
 </style>

@@ -31,6 +31,18 @@ def pos_logout(request):
    response = redirect('pos_login')
    return response
 
+
+@login_required(login_url='pos_login')
+def pos_home(request):
+   t = date.today()
+   y =  y - timedelta(days=1)
+   d = t - timedelta(days=2)
+   #aggregate(to = Sum(F('sale_price')*F('sale_quantity')))['to']
+   #order_by('-product_sold')[:5] 
+   #aggregate(to = Sum('bill_total'))['to']
+   print(t,y,d)   
+   return render(request, 'pos/pos_home.html')
+
 @login_required(login_url='pos_login')
 def pos_billing(request):
    u =request.user
@@ -74,6 +86,7 @@ def pos_cart(request):
               cat.cart_quantity += int(j) 
               cart.cart_direc = d  
               cat.save()
+      """------------ HEY -------------"""#KOT print function here.
       messages.error(request,"Products added to Table")
       response = redirect('pos_billing')
       return response
@@ -122,6 +135,22 @@ def pos_checkout(request,pk):
     if request.method =='POST':
      for p in pros:
       pr = Product.objects.get(product_user= u ,product_id=p['cart_product'])
+      if u.first_name == "1":
+       try:
+        rep = Report.objects.get(rep_user = u,date = str(date.today()) ,product = pr.product_id)
+        if rep:
+         rep.quantity += p['cart_quantity']
+         rep.price += (p['cart_quantity']*pr.product_price)
+         rep.save()
+       except:
+         rep = Report()
+         rep.rep_user = u
+         rep.date = str(date.today())
+         rep.product = pr.product_id
+         rep.category = pr.product_category
+         rep.quantity += p['cart_quantity']
+         rep.price += (p['cart_quantity']*pr.product_price)
+         rep.save()
       sale = Sale()
       sale.sale_product_id_id = p['cart_product']
       sale.sale_user = u
@@ -144,7 +173,9 @@ def pos_bill(request,bill,sum,tab):
    u = request.user
    s = Sale.objects.filter(sale_user= u, sale_bill = int(bill)).values()
    prof = Profile.objects.filter(pro_usr = u).values()
+   """---------- HEY --------------"""#COT print function here.
    billdata = counter(s,bill,prof,sum)
+   """---------- HEY --------------"""#COT print function here.
    ch = Bill()
    ch.bill_number = bill
    ch.bill_user = u
@@ -157,6 +188,7 @@ def pos_bill(request,bill,sum,tab):
    t = Table.objects.get(table_user = u , table_id=tab)
    t.table_status = False
    t.save()
+   Sale.objects.filter(sale_user= u, sale_bill = int(bill)).delete()
    return render(request,'pos/done.html')
  except IntegrityError as e :
    messages.error(request,'You cannot refresh or interrupt the flow of website.')
@@ -198,13 +230,6 @@ def counter(pr,b,prof,sum):
 
 
 
-"""----------------------------------------all clear-----------------------------------------------"""
-"""----------------------------------------all clear-----------------------------------------------"""
-"""----------------------------------------all clear-----------------------------------------------"""
-"""----------------------------------------all clear-----------------------------------------------"""
-"""----------------------------------------all clear-----------------------------------------------"""
-"""----------------------------------------all clear-----------------------------------------------"""
-"""----------------------------------------all clear-----------------------------------------------"""
 
 
 
@@ -219,96 +244,6 @@ def counter(pr,b,prof,sum):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@login_required(login_url='pos_login')
-def pos_home(request):
-   u = request.user
-   ty = datetime.now().year
-   py = ty-1
-   tm = datetime.now().month
-   pm = ty-1
-   today = datetime.now().day
-   print(today)
-   tys = Sale.objects.filter(sale_user=u,sale_year=ty).aggregate(to = Sum(F('sale_price')*F('sale_quantity')))['to']
-   pys = Sale.objects.filter(sale_user=u,sale_year=py).aggregate(to = Sum(F('sale_price')*F('sale_quantity')))['to']
-   tms = Sale.objects.filter(sale_user=u,sale_year=ty,sale_month = tm).aggregate(to = Sum(F('sale_price')*F('sale_quantity')))['to']
-   pms = Sale.objects.filter(sale_user=u,sale_year=ty,sale_month = pm).aggregate(to = Sum(F('sale_price')*F('sale_quantity')))['to']
-   today_sale = Sale.objects.filter(sale_user=u,sale_year=ty,sale_month = tm,sale_day=today).aggregate(to = Sum(F('sale_price')*F('sale_quantity')))['to']
-   most_selling_product = Product.objects.filter(product_user=u).order_by('-product_sold')[:5] 
-   #tys = Sale.objects.filter(sale_user=u,sale_year=ty).aggregate(to = Sum(F('sale_price')*F('sale_quantity')))['to']
-   #tys = Sale.objects.filter(sale_user=u,sale_year=ty).aggregate(to = Sum(F('sale_price')*F('sale_quantity')))['to']
-   today = date.today()
-   yes = today - timedelta(days=1)
-   tupi = Bill.objects.filter(bill_user=u,bill_payment_type='upi',bill_date=today).aggregate(to = Sum('bill_total'))['to']
-   tcash = Bill.objects.filter(bill_user=u,bill_payment_type='cash',bill_date=today).aggregate(to = Sum('bill_total'))['to']
-   tcard = Bill.objects.filter(bill_user=u,bill_payment_type='card',bill_date=today).aggregate(to = Sum('bill_total'))['to']
-   tothers = Bill.objects.filter(bill_user=u,bill_payment_type='others',bill_date=today).aggregate(to = Sum('bill_total'))['to']
-   
-   yupi = Bill.objects.filter(bill_user=u,bill_payment_type='upi',bill_date=yes).aggregate(to = Sum('bill_total'))['to']
-   ycash = Bill.objects.filter(bill_user=u,bill_payment_type='cash',bill_date=yes).aggregate(to = Sum('bill_total'))['to']
-   ycard = Bill.objects.filter(bill_user=u,bill_payment_type='card',bill_date=yes).aggregate(to = Sum('bill_total'))['to']
-   yothers = Bill.objects.filter(bill_user=u,bill_payment_type='others',bill_date=yes).aggregate(to = Sum('bill_total'))['to']
-   print(tys,pys,tms,pms,today_sale)
-   print(most_selling_product)
-   print("=======")
-   print(tupi,tcash,tcard,tothers)
-   print("=======")
-   print(yupi,ycash,ycard,yothers)
-   return render(request, 'pos/pos_home.html')
-
-
-from pos.models import Sale
-from datetime import date
-u = 1
-sale = Sale.objects.filter(u=1).values()
-print(sale)
+#aggregate(to = Sum(F('sale_price')*F('sale_quantity')))['to']
+   #order_by('-product_sold')[:5]    product bill_total
+   #aggregate(to = Sum('bill_total'))['to']
