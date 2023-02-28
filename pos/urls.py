@@ -13,6 +13,8 @@ urlpatterns = [
     path('pos_bill/', pos_bill ,name='pos_bill'),
     path('pos_tables/', pos_tables ,name='pos_tables'),
     path('pos_b_t/<int:pi>/<str:pn>/', pos_b_t ,name='pos_b_t'),
+    path('fast_pos_billing/',fast_pos_billing,name='fast_pos_billing'),
+    path('fast_pos_check/<str:bill>',fast_pos_check,name='fast_pos_check'),
 
 ]   
 

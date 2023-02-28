@@ -25,6 +25,7 @@
         <div class="cate">
             <div class="c">
              {% for cot in categ %}
+             
              <div class="ct" id="{{cot.category_id}}" onclick="selo(this)">{{cot.category_name}}</div>
              {% endfor %}
             </div>
@@ -67,7 +68,7 @@
 </html>
 <style>
   #billing_pos{
-      font-weight: bolder;
+     
       font-size: 30px;
   }
 </style>
@@ -143,10 +144,10 @@
     
    }
     .ct{
+        
         text-align: center;
         border: solid rgb(68, 202, 255) 4px;
         border-radius: 15px;
-        
         font-size: larger;
         color: black;
         margin: 2%;
@@ -157,7 +158,6 @@
         text-align: center;
         border: solid rgb(29, 255, 180) 4px;
         border-radius: 15px;
-        
         font-size: larger;
         color: black;
         margin: 2%;

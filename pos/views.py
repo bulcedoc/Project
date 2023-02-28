@@ -3,8 +3,9 @@ from .models import *
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
-from django.db.models import Sum,F
+from django.db.models import Sum,F,Count
 from django.db import IntegrityError
+from datetime import datetime,date,timedelta
 
 def pos_login(request):
   if request.user.is_authenticated:
@@ -14,17 +15,10 @@ def pos_login(request):
       password = request.POST.get('password')
       user = authenticate(request=None, username =username, password = password)
       if user is not None:
-        pik = Profile.objects.get(pro_usr = user.id)
-        #if pik.live == False:
-        login(request,user)
-         #pik.live = True
-         #pik.save()
-         #messages.error(request,'logged in as '+user.first_name+' for '+user.last_name+' billling.')
-        response = redirect('pos_billing')
-        return response
-        #else:
-         #messages.error(request,'you have already logged in another device')
-         #return render(request, 'pos/pos_login.html')
+         login(request,user)
+         messages.error(request,'Logged in as '+user.first_name+'\nfor '+user.last_name+' billling.')
+         response = redirect('pos_billing')
+         return response
       else:
          messages.error(request,'Wrong credentials')
          return render(request, 'pos/pos_login.html')
@@ -33,12 +27,43 @@ def pos_login(request):
 
 @login_required(login_url='pos_login')
 def pos_logout(request):
-   pik = Profile.objects.get(pro_usr = request.user.id)
-   pik.live = False
-   pik.save()
    logout(request)
    response = redirect('pos_login')
    return response
+
+
+@login_required(login_url='pos_login')
+def pos_home(request):
+   u = request.user
+   t = date.today()
+   y = t -timedelta(days=1)
+   d = t -timedelta(days=2)
+  
+   
+      
+   td = Bill.objects.filter(bill_user = u ,bill_date = t).aggregate(to = Sum('bill_total'))['to']
+   yd = []
+   for i in range(0,7):
+    y = t -timedelta(days=i)
+    c = Bill.objects.filter(bill_user = u ,bill_date = y).aggregate(to = Sum('bill_total'))['to']
+    if c:
+     yd.append([7-i,Bill.objects.filter(bill_user = u ,bill_date = y).aggregate(to = Sum('bill_total'))['to']])
+    else:
+     yd.append([7-i,0])
+   sd = Bill.objects.filter(bill_user = u ,bill_date = t).values('bill_date').annotate(Count('bill_date'))
+   pd = Bill.objects.filter(bill_user = u,bill_date = t).values('bill_payment_type').annotate(Count('bill_payment_type'))
+   print(yd)
+   pay = [['Payment Method', 'Sale']]
+   for i in pd:
+     pay.append([i['bill_payment_type'] , Bill.objects.filter(bill_user = u,bill_date = t,bill_payment_type = (i['bill_payment_type'])).aggregate(to = Sum('bill_total'))['to']])
+   context = {'tSale':td,
+              'nBills':sd,
+              'pay':pay,
+              'gr':yd,
+              'date':date.today(),
+              }
+   print(pay)
+   return render(request, 'pos/pos_home.html',context)
 
 @login_required(login_url='pos_login')
 def pos_billing(request):
@@ -83,13 +108,10 @@ def pos_cart(request):
               cat.cart_quantity += int(j) 
               cart.cart_direc = d  
               cat.save()
+      """------------ HEY -------------"""#KOT print function here.
       messages.error(request,"Products added to Table")
       response = redirect('pos_billing')
       return response
-"""----------------------------------------all clear-----------------------------------------------"""
-@login_required(login_url='pos_login')
-def pos_home(request):
-   return render(request, 'pos/pos_home.html')
 
 @login_required(login_url='pos_login')
 def pos_checkouts(request):
@@ -128,40 +150,63 @@ def pos_b_t(request,pi,pn):
 
 @login_required(login_url='pos_login')
 def pos_checkout(request,pk):
-    from datetime import datetime
     tab = int(pk)
     u = request.user
     bill = str(datetime.now().hour)+str(datetime.now().minute)+str(datetime.now().second)
     pros = Cart.objects.filter(cart_table_id = tab,cart_user =u).values()
+    ch = []
+    for i in pros:
+      p = Product.objects.filter(product_user = u,product_id=i['cart_product']).values('product_name','product_price')
+      a={}
+      a['product'] = p[0]['product_name']
+      a['price'] = p[0]['product_price']
+      a['quant'] = i['cart_product']
+      a['p_total'] = a['price']*a['quant']
+      ch.append(a)
     if request.method =='POST':
      for p in pros:
       pr = Product.objects.get(product_user= u ,product_id=p['cart_product'])
+      if u.first_name == "1":
+       try:
+        rep = Report.objects.get(rep_user = u,date = str(date.today()) ,product = pr.product_id)
+        if rep:
+         rep.quantity += p['cart_quantity']
+         rep.price += (p['cart_quantity']*pr.product_price)
+         rep.save()
+       except:
+         rep = Report()
+         rep.rep_user = u
+         rep.date = str(date.today())
+         rep.product = pr.product_id
+         rep.category = pr.product_category
+         rep.quantity += p['cart_quantity']
+         rep.price += (p['cart_quantity']*pr.product_price)
+         rep.save()
       sale = Sale()
       sale.sale_product_id_id = p['cart_product']
       sale.sale_user = u
-      sale.sale_year =  str(datetime.now().year)
-      sale.sale_month =  str(datetime.now().month)
-      sale.sale_day =  str(datetime.now().day)
-      sale.sale_bill = int(bill)
-      sale.sale_price = pr.product_price
+      sale.sale_date =  str(date.today())
+      sale.sale_bill = bill
       sale.sale_product_name = pr.product_name
       sale.sale_quantity = p['cart_quantity']
+      sale.sale_price = pr.product_price
       sale.save()
      sum = Sale.objects.filter(sale_user=u, sale_bill= bill).aggregate(to = Sum(F('sale_price')*F('sale_quantity')))['to']
      Cart.objects.filter(cart_table_id = tab,cart_user =u).delete()
      return pos_bill(request,bill,sum,tab)
-    context = {'tab':tab ,'pros_len':len(pros),'pros':pros}
+    context = {'tab':tab ,'pros_len':len(pros),'bill':bill,'poo':ch}
     return render(request ,'pos/pos_checkout.html', context)
 
 
 @login_required(login_url='pos_login')
 def pos_bill(request,bill,sum,tab):
  try:
-   from datetime import date
    u = request.user
    s = Sale.objects.filter(sale_user= u, sale_bill = int(bill)).values()
    prof = Profile.objects.filter(pro_usr = u).values()
-   billdata = counter(s,bill,sum,prof)
+   """---------- HEY --------------"""#COT print function here.
+   billdata = counter(s,bill,prof,sum)
+   """---------- HEY --------------"""#COT print function here.
    ch = Bill()
    ch.bill_number = bill
    ch.bill_user = u
@@ -174,6 +219,7 @@ def pos_bill(request,bill,sum,tab):
    t = Table.objects.get(table_user = u , table_id=tab)
    t.table_status = False
    t.save()
+   Sale.objects.filter(sale_user= u, sale_bill = int(bill)).delete()
    return render(request,'pos/done.html')
  except IntegrityError as e :
    messages.error(request,'You cannot refresh or interrupt the flow of website.')
@@ -183,7 +229,7 @@ def pos_bill(request,bill,sum,tab):
 
 """ --------------------------------------       PRINT FORMATING DONE HERE      -------------------------------------"""
 
-def counter(pr,b,s,prof):
+def counter(pr,b,prof,sum):
  from prettytable import PrettyTable
  from datetime import date
  import textwrap
@@ -204,6 +250,101 @@ def counter(pr,b,s,prof):
  table.border = False
  table.padding_width = 1
  line = "-".center(30,'-')
- f_n = "Total    "+str(s).center(30,' ')
+ f_n = "Total    "+str(sum).center(30,' ')
  p_out = "\n\n"+company +"\n\n"+address+"\n"+mob+"\n"+email+"\n\n"+bill+"\n"+line+"\n\n"+ table.get_string()+"\n\n"+line+"\n"+f_n+"\n"+line+"\n\n"
+ print(p_out)
  return p_out
+
+
+
+
+
+
+
+
+
+
+@login_required(login_url='pos_login')
+def fast_pos_billing(request):
+   u =request.user
+   products = Product.objects.filter(product_user=u).values()
+   categ = Category.objects.filter(category_user=u).values()
+   con = {
+      'products': products,
+      'categ': categ,
+      }
+   if request.method =='POST':
+     bill = str(datetime.now().hour)+str(datetime.now().minute)+str(datetime.now().second)
+     p = request.POST.getlist('prod')
+     q = request.POST.getlist('quan')
+     d = request.POST.get('direc')
+     if (len(p)<=0):
+        messages.error(request,"No products has been selected")
+        res = redirect('fast_pos_billing')
+        return res
+     else:
+      for i in range(len(p)):
+       pr = Product.objects.get(product_user= u ,product_id=p[i])
+       sale = Sale()
+       sale.sale_product_id_id = int(p[i])
+       sale.sale_user = u
+       sale.sale_date =  str(date.today())
+       sale.sale_bill = bill
+       sale.sale_product_name = pr.product_name
+       sale.sale_quantity = int(q[i])
+       sale.sale_price = pr.product_price
+       sale.save()
+      return redirect('fast_pos_check',bill = bill)
+   return render(request,'pos/fast_pos_billing.html',con)
+
+@login_required(login_url='pos_login')
+def fast_pos_check(request,bill):
+  u = request.user
+  sale = Sale.objects.filter(sale_user = u,sale_bill=bill).values('sale_product_id','sale_product_name','sale_quantity','sale_price')
+  total = Sale.objects.filter(sale_user = u,sale_bill=bill).aggregate(to = Sum(F('sale_price')*F('sale_quantity')))['to']
+  context = {'pros_len':len(sale),'bill':bill,'poo':sale,'total':total}
+  if request.method == 'POST':
+   if u.first_name == "1":
+    for p in sale:
+     try:
+      rep = Report.objects.get(rep_user = u,date = str(date.today()) ,product = int(p['sale_product_id']))
+      if rep:
+         rep.quantity += p['sale_quantity']
+         rep.price += (p['sale_quantity']*p['sale_price'])
+         rep.save()
+     except:
+         c = Product.objects.filter(product_user = u,product_id = p['sale_product_id'])
+         rep = Report()
+         rep.rep_user = u
+         rep.date = str(date.today())
+         rep.product = int(c['product_id'])
+         rep.category = c['product_category']
+         rep.quantity += p['sale_quantity']
+         rep.price += (p['sale_quantity'] * p['sale_price'])
+         rep.save()
+   return fast_pos_bill(request,bill,total)  
+  return render(request,'pos/fast_pos_checkout.html',context)
+
+@login_required(login_url='pos_login')
+def fast_pos_bill(request,bill,sum):
+ try:
+   u = request.user
+   s = Sale.objects.filter(sale_user= u, sale_bill = int(bill)).values()
+   prof = Profile.objects.filter(pro_usr = u).values()
+   """---------- HEY --------------"""#COT print function here.
+   billdata = counter(s,bill,prof,sum)
+   """---------- HEY --------------"""#COT print function here.
+   ch = Bill()
+   ch.bill_number = bill
+   ch.bill_user = u
+   ch.bill_date = str(date.today())
+   ch.bill_data = billdata
+   ch.bill_total = sum
+   ch.bill_payment_type = request.POST.get('pay')
+   ch.save()
+   messages.error(request,'sales and Bill details added to Databse.')
+   Sale.objects.filter(sale_user= u, sale_bill = int(bill)).delete()
+   return render(request,'pos/done.html')
+ except IntegrityError as e :
+   messages.error(request,'You cannot refresh or interrupt the flow of website.')
+   return render(request,'pos/okay_fast.html')

@@ -18,8 +18,8 @@ class Category(models.Model):
     category_id = models.AutoField(primary_key=True)
     category_name = models.CharField(max_length=200)
     category_user = models.ForeignKey(User,verbose_name="User", on_delete=models.CASCADE)
-    def __str__(self):
-        return self.category_name
+    def __int__(self):
+        return self.category_id
 
 class Product(models.Model):
     product_id = models.AutoField(primary_key=True)
@@ -29,15 +29,15 @@ class Product(models.Model):
     product_category = models.ForeignKey(Category,verbose_name="Category", on_delete=models.CASCADE)
     product_user = models.ForeignKey(User,verbose_name="User", on_delete=models.CASCADE)
     def __str__(self):
-        return self.product_name
+        return self.product_id
 
 class Bill(models.Model):
     bill_number = models.IntegerField()
     bill_user = models.ForeignKey(User,verbose_name="User", on_delete=models.CASCADE)
-    bill_date = models.CharField(max_length=100)
+    bill_date = models.CharField(max_length=10)
     bill_data = models.TextField()
     bill_total = models.IntegerField()
-    bill_payment_type = models.CharField(max_length=100)
+    bill_payment_type = models.CharField(max_length=10)
     def __str__(self):
         return self.bill_number
 
@@ -59,14 +59,23 @@ class Cart(models.Model):
         return self.cart_table_id
 
 class Sale(models.Model):
+    sale_id = models.AutoField(primary_key=True)
     sale_product_id = models.ForeignKey(Product,verbose_name="Product", on_delete=models.CASCADE)
-    sale_product_name = models.CharField(max_length=100)
     sale_user = models.ForeignKey(User,verbose_name="User", on_delete=models.CASCADE)
-    sale_year = models.IntegerField()
-    sale_month = models.IntegerField()
-    sale_day = models.IntegerField()
+    sale_date = models.CharField(max_length=50)
     sale_bill = models.IntegerField()
+    sale_product_name = models.CharField(max_length=100)
     sale_quantity = models.IntegerField()
     sale_price = models.IntegerField()
     def __str__(self):
         return self.sale_user
+class Report(models.Model):
+    rep_id = models.AutoField(primary_key=True)
+    rep_user = models.ForeignKey(User,verbose_name="User", on_delete=models.CASCADE)
+    date = models.CharField(max_length=10)
+    product = models.IntegerField()
+    category = models.IntegerField()
+    quantity = models.IntegerField(default=0)
+    price = models.IntegerField(default=0)
+    def __str__(self):
+        return self.rep_id

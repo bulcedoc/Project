@@ -8,25 +8,145 @@
 </head>
 <body>
     {% include 'nav/nav_pos.html' %}
-{% for msg in messages %}
+    {% for msg in messages %}
     <div class="alert alert-success" style="float: left; width:50%;">{{msg}}<div onclick="parentElement.style.display = 'none';" style="color: red; float: right;">&#10006;</div></div>
     {% endfor %}
-<form action="" method="post">
-  {% csrf_token %}
-  <input type="text" value="{{bill}}" name="bill"readonly>
-  <input type="text" value="{{tab}}" name="tab"readonly>
-  <input type="text" value="{{pros_len}}" name="pros_len"readonly>
-  <input type="text" value="{{sum}}" name="sum"readonly>
-  <select name="pay" id="pay">
-      <option value="upi">Upi</option>
-      <option value="cash">Cash</option>
-      <option value="card">Card</option>
-  </select>
-  <input type="submit">
-</form>
+ <div style="display: flex; flex-direction: row;">
+ <div class="Check">
+    <div class="container px-4" style="margin:0;">
+        <div class="row gx-5">
+            <div class="col">
+                <div class="p-3 border bg-light" style="text-align:center;">Table Number   {{tab}}</div>
+               </div>
+        </div>
+      </div>
+      <div class="container px-4" style="margin:0;">
+        <div class="row gx-5">
+            <div class="col">
+                <div class="p-3 border bg-light" style="text-align:center;">Estimated  Bill Number {{bill}}</div>
+               </div>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:row; justify-content: space-around; align-items: center;">
+        <div style="padding: 2%; width: 30%;"><strong>Product</strong></div>
+          <div style="padding: 2%;"><strong>Price</strong></div>
+            <div style="padding: 5%;"><strong>Quantity</strong></div>
+              <div style="padding: 5%;"><strong>Sum</strong></div>
+        </div>
+    {% for c in poo %}
+          <div style="display:flex; flex-direction:row; justify-content: space-around; align-items: center;">
+              <div style="padding: 5%; width: 30%;">{{c.product}}</div>
+                <div style="padding: 5%;">{{c.price}}</div>
+                  <div style="padding: 5%;">{{c.quant}}</div>
+                    <div style="padding: 5%;" class="total">{{c.p_total}}</div>
+              </div>
+          {% endfor %}
+        
+          <div class="container px-4" style="margin:0;">
+            <div class="row gx-5">
+                <div class="col">
+                    <div class="p-3 border bg-light" style="text-align:center;">No.of Products {{pros_len}}</div>
+                   </div>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex;flex-direction: column; margin-left: 15%; margin-top: 5%;">
+          <div class="input-group input-group-sm mb-3" >
+            <div class="input-group-prepend" >
+              <span class="input-group-text" id="inputGroup-sizing-sm" style="text-align: center;font-size: x-large; ">Total Expected</span>
+            </div>
+            <div  class="form-control" id="to" style="text-align: center;font-size: x-large; " ></div>
+          </div>
+        <form action="" method="post">
+            {% csrf_token %}
+
+            <div class="card border-warning mb-3" style="margin-top: 1%;">
+                <div class="card-header">This feature comming sonn</div>
+                <div class="card-body">
+                  <div class="form-check form-switch" style="margin-top: 5%;">
+                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckDisabled" disabled>
+                    <label class="form-check-label" for="flexSwitchCheckDisabled">Send Bill Via Whatsapp</label>
+                  </div>
+                  <div class="input-group mb-3" style="margin-top: 5%; margin-bottom: 10;">
+                    <span class="input-group-text" id="basic-addon1">Mobile Number</span>
+                    <input type="text" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1" disabled>
+                  </div>
+                </div>
+              </div>
+                
+            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" name="pay" id="pay" required>
+                <option value="">Select Method Of Payment</option>
+                <option value="upi">Upi</option>
+                <option value="cash">Cash</option>
+                <option value="card">Card</option>
+                <option value="others">Others</option>
+              </select>
+            <input class="ins" type="submit">
+          </form>
+        </div>
+    </div>
+    </body>
+    </html>
+
   <script type="text/javascript">
     window.history.forward();
     function noBack() {
         window.history.forward();
     }
 </script>
+
+
+<style>
+    
+    .ins {
+            margin: 2%;
+          border-radius: 2%;  
+        width: 40%;
+        padding: 1%;
+        text-decoration: none;
+        color: black;
+        border: none;
+        font-size: larger;
+        background-color:   rgb(29, 255, 180);
+        
+        }
+.Check{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    height: 600px;
+    overflow-y: scroll;
+}
+input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        body{
+        margin: 0;
+        text-align: center;
+        font-size: large;
+    }
+    ::-webkit-scrollbar{
+      width: 0.3em;
+      
+    }
+    ::-webkit-scrollbar-track{
+      background: white;
+    }
+    ::-webkit-scrollbar-thumb{
+      background: rgb(176, 176, 176);
+      
+    }
+</style>
+<script>
+  let v = document.getElementsByClassName("total")
+  console.log(v)
+  t = 0
+  for(i=0;i<v.length;i++){
+    t = t+Number(v[i].innerHTML)
+  }
+  console.log(t)
+  let c = document.getElementById("to")
+  c.innerHTML = "<strong>"+t+"</strong>"
+  </script>
