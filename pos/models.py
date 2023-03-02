@@ -29,7 +29,7 @@ class Product(models.Model):
     product_category = models.ForeignKey(Category,verbose_name="Category", on_delete=models.CASCADE)
     product_user = models.ForeignKey(User,verbose_name="User", on_delete=models.CASCADE)
     def __str__(self):
-        return self.product_id
+        return self.product_name
 
 class Bill(models.Model):
     bill_number = models.IntegerField()
@@ -72,10 +72,10 @@ class Sale(models.Model):
 class Report(models.Model):
     rep_id = models.AutoField(primary_key=True)
     rep_user = models.ForeignKey(User,verbose_name="User", on_delete=models.CASCADE)
-    date = models.CharField(max_length=10)
-    product = models.IntegerField()
-    category = models.IntegerField()
-    quantity = models.IntegerField(default=0)
-    price = models.IntegerField(default=0)
+    rep_date = models.CharField(max_length=10)
+    rep_product = models.IntegerField()
+    rep_category = models.IntegerField()
+    rep_quantity = models.IntegerField(default=0)
+    rep_price = models.IntegerField(default=0)
     def __str__(self):
-        return self.rep_id
+        return str(self.type)

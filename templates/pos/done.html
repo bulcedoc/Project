@@ -14,19 +14,24 @@
     {% endfor %}
 <img src="{% static 'check-circle.svg' %}" alt="No Data" style="width:10%;margin-left:45%; margin-top: 2%;">
 <h2 style="text-align:center;margin:5%;">Billing has been done.</h2>
-<a class="ins" href="{% url 'pos_billing' %}" >Go to Billing</a>
+<div style="display:flex; flex-direction:row; justify-content: center; ">
+  <a class="ins" href="{% url 'pos_billing' %}" >Go to Billing</a>
+
+
+</div>
 <style>
   .ins {
             margin: 2%;
+           
           border-radius: 2%;  
-        width: 40%;
+        width: 10%;
         padding: 1%;
         text-decoration: none;
         color: black;
         border: none;
         font-size: larger;
         background-color:   rgb(29, 255, 180);
-        margin-left: 45.5%;
+        text-align: center;
         }
 </style>
 </body>
