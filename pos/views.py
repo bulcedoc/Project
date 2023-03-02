@@ -168,19 +168,19 @@ def pos_checkout(request,pk):
       pr = Product.objects.get(product_user= u ,product_id=p['cart_product'])
       if u.first_name == "1":
        try:
-        rep = Report.objects.get(rep_user = u,date = str(date.today()) ,product = pr.product_id)
+        rep = Report.objects.get(rep_user = u,rep_date = str(date.today()) ,rep_product = pr.product_id)
         if rep:
-         rep.quantity += p['cart_quantity']
-         rep.price += (p['cart_quantity']*pr.product_price)
+         rep.rep_quantity += p['cart_quantity']
+         rep.rep_price += (p['cart_quantity']*pr.product_price)
          rep.save()
        except:
          rep = Report()
          rep.rep_user = u
-         rep.date = str(date.today())
-         rep.product = pr.product_id
-         rep.category = pr.product_category
-         rep.quantity += p['cart_quantity']
-         rep.price += (p['cart_quantity']*pr.product_price)
+         rep.rep_date = str(date.today())
+         rep.rep_product = pr.product_id
+         rep.rep_category = pr.product_category
+         rep.rep_quantity += p['cart_quantity']
+         rep.rep_price += (p['cart_quantity']*pr.product_price)
          rep.save()
       sale = Sale()
       sale.sale_product_id_id = p['cart_product']
@@ -299,7 +299,9 @@ def fast_pos_billing(request):
 
 @login_required(login_url='pos_login')
 def fast_pos_check(request,bill):
+  #from datetime import date
   u = request.user
+  dat = str(date.today())
   sale = Sale.objects.filter(sale_user = u,sale_bill=bill).values('sale_product_id','sale_product_name','sale_quantity','sale_price')
   total = Sale.objects.filter(sale_user = u,sale_bill=bill).aggregate(to = Sum(F('sale_price')*F('sale_quantity')))['to']
   context = {'pros_len':len(sale),'bill':bill,'poo':sale,'total':total}
@@ -307,20 +309,31 @@ def fast_pos_check(request,bill):
    if u.first_name == "1":
     for p in sale:
      try:
-      rep = Report.objects.get(rep_user = u,date = str(date.today()) ,product = int(p['sale_product_id']))
+      rep = Report.objects.filter(rep_user = u , rep_date = dat , rep_product = p['sale_product_id']).values('rep_quantity','rep_price')
       if rep:
-         rep.quantity += p['sale_quantity']
-         rep.price += (p['sale_quantity']*p['sale_price'])
+         rep.rep_quantity += p['sale_quantity']
+         rep.rep_price += (p['sale_quantity']*p['sale_price'])
          rep.save()
-     except:
-         c = Product.objects.filter(product_user = u,product_id = p['sale_product_id'])
+      else:
+         c = Product.objects.get(product_user = u,product_id = p['sale_product_id'])
          rep = Report()
          rep.rep_user = u
-         rep.date = str(date.today())
-         rep.product = int(c['product_id'])
-         rep.category = c['product_category']
-         rep.quantity += p['sale_quantity']
-         rep.price += (p['sale_quantity'] * p['sale_price'])
+         rep.rep_date = dat
+         rep.rep_product = c.product_id
+         rep.rep_category = c.product_category
+         rep.rep_quantity += p['sale_quantity']
+         rep.rep_price += (p['sale_quantity'] * p['sale_price'])
+         rep.save()
+     except:
+         c = Product.objects.get(product_user = u,product_id = p['sale_product_id'])
+         print(c)
+         rep = Report()
+         rep.rep_user = u
+         rep.rep_date = dat
+         rep.rep_product = c.product_id
+         rep.rep_category = c.product_category
+         rep.rep_quantity += p['sale_quantity']
+         rep.rep_price += (p['sale_quantity'] * p['sale_price'])
          rep.save()
    return fast_pos_bill(request,bill,total)  
   return render(request,'pos/fast_pos_checkout.html',context)
@@ -344,7 +357,7 @@ def fast_pos_bill(request,bill,sum):
    ch.save()
    messages.error(request,'sales and Bill details added to Databse.')
    Sale.objects.filter(sale_user= u, sale_bill = int(bill)).delete()
-   return render(request,'pos/done.html')
+   return render(request,'pos/fas_done.html')
  except IntegrityError as e :
    messages.error(request,'You cannot refresh or interrupt the flow of website.')
    return render(request,'pos/okay_fast.html')
