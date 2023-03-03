@@ -13,16 +13,9 @@ def pos_admin_login(request):
       password = request.POST.get('password')
       user = authenticate(request=None, username =username, password = password)
       if user is not None:
-        pik = Profile.objects.get(pro_usr = user.id)
-        if pik.live == False:
          login(request,user)
-         pik.live = True
-         pik.save()
          response = redirect('pos_admin_home')
          return response
-        else:
-         messages.error(request,'you have already logged in another device/pos')
-         return render(request, 'pos_admin/pos_admin_login.html')
       else:
          messages.error(request,'Wrong credentials')
          return render(request, 'pos_admin/pos_admin_login.html')
@@ -31,9 +24,6 @@ def pos_admin_login(request):
 
 @login_required
 def pos_admin_logout(request):
-   pik = Profile.objects.get(pro_usr = request.user.id)
-   pik.live = False
-   pik.save()
    logout(request)
    response = redirect('pos_admin_login')
    return response
@@ -127,3 +117,76 @@ def pos_admin_add_table(request):
         'user':u
      }
      return render(request,'pos_admin/pos_admin_add_table.html')
+   
+@login_required(login_url="pos_admin_login")
+def pos_admin_edit_product(request):
+ pros = Product.objects.filter(product_user = request.user)
+ return render(request,'pos_admin/pos_admin_edit_product.html',{'pro':pros})
+@login_required(login_url="pos_admin_login")
+def pos_admin_edits_product(request,pk):
+ entry = Product.objects.filter(product_id=pk,product_user=request.user)
+ cat = Category.objects.filter(category_user = request.user)
+ if request.method == 'POST':
+     entry = Product(product_id=pk,product_user=request.user)
+     p = request.POST.get('name')
+     f = request.POST.get('fav')
+     c = request.POST.get('cat')
+     pr = request.POST.get('price')
+     entry.product_name = p
+     entry.product_price = pr
+     if f == "1":
+      entry.product_fav = True
+     else:
+      entry.product_fav = False 
+     entry.product_category_id = int(c)
+     entry.save()
+     messages.error(request,'Product edited successfully.')
+     res = redirect('pos_admin_home')
+     return res
+ return render(request,'pos_admin/p_e.html',{'pro':entry,'cat':cat})
+
+@login_required(login_url="pos_admin_login")
+def pos_admin_edit_cat(request):
+ pros = Category.objects.filter(category_user = request.user)
+ return render(request,'pos_admin/pos_admin_edit_cat.html',{'pro':pros})
+@login_required(login_url="pos_admin_login")
+def pos_admin_edits_cat(request,pk):
+ entry = Category.objects.filter(category_id =pk,category_user= request.user)
+ if request.method == 'POST':
+     entry = Category(category_id =pk,category_user= request.user)
+     cat = request.POST.get('name')
+     entry.category_name =cat
+     entry.save()
+     messages.error(request,'Category edited successfully.')
+     res = redirect('pos_admin_home')
+     return res
+ return render(request,'pos_admin/c_e.html',{'pro':entry})
+
+
+@login_required(login_url="pos_admin_login")
+def pos_admin_edit_tab(request):
+ pros = Table.objects.filter(table_user = request.user)
+ return render(request,'pos_admin/pos_admin_edit_tab.html',{'pro':pros})
+@login_required(login_url="pos_admin_login")
+def pos_admin_edits_tab(request,pk):
+  entry = Table.objects.filter(table_id=pk,table_user=request.user)
+  if request.method == 'POST':
+     entry = Table(table_id=pk,table_user=request.user)
+     t = request.POST.get('name')
+     entry.table_name = t
+     entry.save()
+     messages.error(request,'Table edited successfully.')
+     res = redirect('pos_admin_home')
+     return res
+  return render(request,'pos_admin/t_e.html',{'pro':entry})
+
+@login_required(login_url="pos_admin_login")
+def del_tab(request,pk):
+ Table(table_user = request.user,table_id=pk).delete()
+ res = redirect('pos_admin_home')
+ return res
+@login_required(login_url="pos_admin_login")
+def del_pro(request,pk):
+ Product(product_user = request.user,product_id=pk).delete()
+ res = redirect('pos_admin_home')
+ return res

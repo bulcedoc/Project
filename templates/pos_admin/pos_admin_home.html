@@ -19,6 +19,7 @@
             <div class="card-body">
               <h5 class="card-title" style="font-size: x-large;"><strong>Add Category</strong></h5>
               <p class="card-text">Here you can add the category, specific set of products</p>
+              <a style="margin-bottom: 2%;" href="{% url 'pos_admin_edit_cat' %}" class="btn btn-primary" style="background-color:   rgb(29, 255, 180); color:  black; border: none; font-size: large;">Edit Category</a>
               <a href="{% url 'pos_admin_add_cat' %}" class="btn btn-primary" style="background-color:   rgb(29, 255, 180); color:  black; border: none; font-size: large;">Go add category</a>
             </div>
           </div>
@@ -26,16 +27,19 @@
             <div class="card-body">
               <h5 class="card-title" style="font-size: x-large;"><strong>Add Product</strong></h5>
               <p class="card-text">Here you can add the products and prices of products.</p>
-              <a href="{% url 'pos_admin_add_product' %}" class="btn btn-primary" style="background-color:   rgb(29, 255, 180); color:  black; border: none; font-size: large;">Go add product</a>
+              <a style="margin-bottom: 2%;" href="{% url 'pos_admin_edit_product' %}" class="btn btn-primary" style="background-color:   rgb(29, 255, 180); color:  black; border: none; font-size: large;">Edit Product</a>
+              <a  href="{% url 'pos_admin_add_product' %}" class="btn btn-primary" style="background-color:   rgb(29, 255, 180); color:  black; border: none; font-size: large;">Go add product</a>
             </div>
           </div>
           <div class="card" style="width: 20rem; margin: 5%;">
             <div class="card-body">
               <h5 class="card-title" style="font-size: x-large;"><strong>Add Table</strong></h5>
               <p class="card-text">Here you can add tables present in your bussiness.</p>
+              <a style="margin-bottom: 2%;" href="{% url 'pos_admin_edit_tab' %}" class="btn btn-primary" style="background-color:   rgb(29, 255, 180); color:  black; border: none; font-size: large;">Edit Table</a>
               <a href="{% url 'pos_admin_add_table' %}" class="btn btn-primary" style="background-color:   rgb(29, 255, 180); color:  black; border: none; font-size: large;">Go add table</a>
             </div>
           </div>
+          
           
     </div>
     <div class="alert alert-info">For any kind updating, deleting, changing printer data contact supplier.<br>These features are under development.</div>
