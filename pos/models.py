@@ -11,6 +11,7 @@ class Profile(models.Model):
     email = models.CharField(max_length=100)
     business_name = models.CharField(max_length=100)
     address = models.CharField(max_length=150)
+    upi_id = models.CharField(max_length=100)
     def __str__(self):
         return self.mobile
 

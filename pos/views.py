@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Sum,F,Count
 from django.db import IntegrityError
 from datetime import datetime,date,timedelta
+import pyqrcode
+import os
 
 def pos_login(request):
   if request.user.is_authenticated:
@@ -160,7 +162,7 @@ def pos_checkout(request,pk):
       a={}
       a['product'] = p[0]['product_name']
       a['price'] = p[0]['product_price']
-      a['quant'] = i['cart_product']
+      a['quant'] = i['cart_quantity']
       a['p_total'] = a['price']*a['quant']
       ch.append(a)
     if request.method =='POST':
@@ -204,16 +206,20 @@ def pos_bill(request,bill,sum,tab):
    u = request.user
    s = Sale.objects.filter(sale_user= u, sale_bill = int(bill)).values()
    prof = Profile.objects.filter(pro_usr = u).values()
-   """---------- HEY --------------"""#COT print function here.
-   billdata = counter(s,bill,prof,sum)
-   """---------- HEY --------------"""#COT print function here.
+   p = request.POST.get('pay')
+   if p == "upi":
+    billdata = upi_counter(s,bill,prof,sum)
+    """---------- HEY --------------"""#COT print function here.
+   else:
+    billdata = counter(s,bill,prof,sum,p)
+    """---------- HEY --------------"""#COT print function here.
    ch = Bill()
    ch.bill_number = bill
    ch.bill_user = u
    ch.bill_date = str(date.today())
    ch.bill_data = billdata
    ch.bill_total = sum
-   ch.bill_payment_type = request.POST.get('pay')
+   ch.bill_payment_type = p
    ch.save()
    messages.error(request,'sales and Bill details added to Databse.')
    t = Table.objects.get(table_user = u , table_id=tab)
@@ -229,7 +235,7 @@ def pos_bill(request,bill,sum,tab):
 
 """ --------------------------------------       PRINT FORMATING DONE HERE      -------------------------------------"""
 
-def counter(pr,b,prof,sum):
+def counter(pr,b,prof,sum,p):
  from prettytable import PrettyTable
  from datetime import date
  import textwrap
@@ -251,10 +257,38 @@ def counter(pr,b,prof,sum):
  table.padding_width = 1
  line = "-".center(30,'-')
  f_n = "Total    "+str(sum).center(30,' ')
- p_out = "\n\n"+company +"\n\n"+address+"\n"+mob+"\n"+email+"\n\n"+bill+"\n"+line+"\n\n"+ table.get_string()+"\n\n"+line+"\n"+f_n+"\n"+line+"\n\n"
+ p_n = ("Payment Method   "+str(p)).center(30)
+ p_out = "\n\n"+company +"\n\n"+address+"\n"+mob+"\n"+email+"\n\n"+bill+"\n"+line+"\n\n"+ table.get_string()+"\n\n"+line+"\n"+f_n+"\n"+line+"\n\n"+p_n+"\n\n"
  print(p_out)
  return p_out
-
+def upi_counter(pr,b,prof,sum):
+ from prettytable import PrettyTable
+ from datetime import date
+ import textwrap
+ company = str(prof[0]['business_name']).center(32,' ')
+ address = str(prof[0]['address']).center(30,' ')
+ address = textwrap.fill(address,width=30)
+ mob = str(prof[0]['mobile']).center(30,' ')
+ mob = textwrap.fill(mob,width=30)
+ email = str(prof[0]['email']).center(30,' ')
+ email = textwrap.fill(email,width=30)
+ day = str(date.today()).rjust(10,' ')
+ bill = "B.No "+b+"".ljust(10,' ')
+ bill = bill+day
+ table = PrettyTable(['Product','Price','Qty','Amt'])
+ for i in pr:
+  c = textwrap.fill(i['sale_product_name'],width=10)
+  table.add_row([c,i['sale_price'],i['sale_quantity'],i['sale_price']*i['sale_quantity']])
+ table.border = False
+ table.padding_width = 1
+ line = "-".center(30,'-')
+ f_n = "Total    "+str(sum).center(30,' ')
+ p_n = "Payment Method    upi".center(30)
+ p_out = "\n\n"+company +"\n\n"+address+"\n"+mob+"\n"+email+"\n\n"+bill+"\n"+line+"\n\n"+ table.get_string()+"\n\n"+line+"\n"+f_n+"\n"+line+"\n\n"+p_n+"\n\n"
+ print(p_out)
+ upi = "upi://pay?pa="+prof[0]['upi_id']+"&am="+str(sum)
+ c_out(upi,b)
+ return p_out
 
 
 
@@ -344,8 +378,12 @@ def fast_pos_bill(request,bill,sum):
    u = request.user
    s = Sale.objects.filter(sale_user= u, sale_bill = int(bill)).values()
    prof = Profile.objects.filter(pro_usr = u).values()
-   """---------- HEY --------------"""#COT print function here.
-   billdata = counter(s,bill,prof,sum)
+   p = request.POST.get('pay')
+   if p == "upi":
+    billdata = upi_counter(s,bill,prof,sum)
+    """---------- HEY --------------"""#COT print function here.
+   else:
+    billdata = counter(s,bill,prof,sum,p)
    """---------- HEY --------------"""#COT print function here.
    ch = Bill()
    ch.bill_number = bill
@@ -353,7 +391,7 @@ def fast_pos_bill(request,bill,sum):
    ch.bill_date = str(date.today())
    ch.bill_data = billdata
    ch.bill_total = sum
-   ch.bill_payment_type = request.POST.get('pay')
+   ch.bill_payment_type = p
    ch.save()
    messages.error(request,'sales and Bill details added to Databse.')
    Sale.objects.filter(sale_user= u, sale_bill = int(bill)).delete()
@@ -361,3 +399,28 @@ def fast_pos_bill(request,bill,sum):
  except IntegrityError as e :
    messages.error(request,'You cannot refresh or interrupt the flow of website.')
    return render(request,'pos/okay_fast.html')
+
+
+
+
+
+
+
+
+
+
+
+
+
+def c_out(upi,b):
+ url = pyqrcode.create(upi)
+ url.png(b+".png", scale = 8)
+ #p = printer.Network("192.168.1.99")
+ #p.text(p_out)
+ #p.image(b+".png")
+ #p.qr("You can readme from your smartphone")
+ #p.barcode('1324354657687','EAN13',64,2,'','')
+ #p.cut()
+ print("okay done upi ")
+ os.remove(b+".png")
+ return True
