@@ -5,10 +5,50 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sadada</title>
+    {% load static %}
 </head>
 <body>
-    <h1>Welcome</h1><br><br>
-    <a href="{% url 'pos_home' %}">Go to POS</a><br><br>
-    <a href="{% url 'pos_admin_home' %}">Pos Admin</a>
+    {% include 'nav/nav.html' %}
+    <div class="container"> 
+    <img src="{% static 'ok.png' %}" style="width: 90%;"><br><br>
+    <h3>Feel free contact us for starting service, price and other details</h3>
+    
+    </div>
 </body>
 </html>
+<style>
+    .container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Make the image responsive */
+.container img {
+  width: 100%;
+  height: 100%;
+}
+
+/* Style the button and place it in the middle of the container/image */
+.container .btn {
+  
+  top: 120%;
+  left: 80%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  background-color: #555;
+  color: white;
+  font-size: 16px;
+  padding: 12px 24px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.container .btn:hover {
+  background-color: black;
+}
+</style>

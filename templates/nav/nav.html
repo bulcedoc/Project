@@ -1,0 +1,20 @@
+<div class="topbar">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <h1 class="Lo">SADADA.in</h1>
+    <div class="navbar"></div>
+    <a href="https://wa.me/9347495033" class="nave" >Contact</a>
+    <div class="nave">
+        
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"style="background-color: rgb(68, 202, 255); color:  black; border: none; font-size: x-large;">
+          Actions
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'pos_home' %}">Go to POS Dashboard</a></li>
+            <li><a class="dropdown-item" href="{% url 'pos_admin_home' %}">Go to POS administration</a></li>
+        </ul>
+      </div>
+    </div>
+</div>
+

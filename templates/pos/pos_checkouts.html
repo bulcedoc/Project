@@ -15,7 +15,7 @@
     <div class="tabl">
         {% for check in checkouts %}
         <div class="bot">
-            Table id: {{check.table_id}}  >  {{check.table_name}}
+            Table id: {{check.table_id}}  ->  {{check.table_name}}
          <a href="{% url 'pos_checkout' check.table_id  %}" class="but">Proceed<img src="{% static 'arrow-right-circle.svg' %}"style="width:15%" ></a>
         </div>
          {% endfor %}

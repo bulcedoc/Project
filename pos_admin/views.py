@@ -190,3 +190,35 @@ def del_pro(request,pk):
  Product(product_user = request.user,product_id=pk).delete()
  res = redirect('pos_admin_home')
  return res
+
+
+@login_required(login_url="pos_admin_login")
+def pos_admin_view_bill(request):
+ if request.method == 'POST':
+  bn = int(request.POST.get('bn'))
+  bd = str(request.POST.get('bd'))
+  bu = request.user
+  print(bd)
+  bill = Bill.objects.filter(bill_number=bn, bill_user=bu,bill_date = bd).values('bill_data')
+  if bill:
+    
+    return render(request,'pos_admin/pos_admin_view_bill.html',{'bill':bill,'pd':bd,'pb':bn})
+  else:
+    return render(request,'pos_admin/pos_admin_no_bill.html')
+ return render(request,'pos_admin/pos_admin_get_bill.html')
+
+@login_required(login_url="pos_admin_login")
+def pos_admin_reprint_bill(request,pb,pd):
+  bn = int(pb)
+  bd = str(pd)
+  bu = request.user
+  print(bd)
+  bill = Bill.objects.filter(bill_number=bn, bill_user=bu,bill_date = bd).values('bill_data')
+  if bill:
+    ## reprint of bill
+    print(bill)
+    messages.error(request,'Bill has been re_printed')
+    res = redirect('pos_admin_home')
+    return res
+  else:
+    return render(request,'pos_admin/pos_admin_no_bill.html')

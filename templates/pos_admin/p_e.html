@@ -17,7 +17,11 @@
     <h1 style="display: flex; justify-content: center;  font-family: 'Overpass', sans-serif; font-size: 300%;">Edit product</h1>
     <h4>{{p.product_name}}</h4>
     <br>
-    <a href="{% url 'del_pro' p.product_id %}" style="text-decoration: none;padding: 0.8%; background-color: rgb(246, 37, 37); color: rgb(255, 255, 255); border-radius: 2%;" onclick="alert('Do you want to delete {{p.product_name}}')"><img  src="{% static 'trash3.svg' %}">  Delete {{p.product_name}} </a>
+    <a style="text-decoration: none;padding: 0.8%; background-color: rgb(246, 37, 37); color: rgb(255, 255, 255); border-radius: 2%;" onclick="if (window.confirm('Do you want to delete {{p.product_name}}'))
+    {
+      window.location = '{% url 'del_pro' p.product_id %}';
+    }
+    "><img  src="{% static 'trash3.svg' %}">  Delete {{p.product_name}} </a>
     <div >
         <form action="" method="post" class="tab">
         {% csrf_token %}

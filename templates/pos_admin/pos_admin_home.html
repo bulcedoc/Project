@@ -15,8 +15,9 @@
     {% endfor %}
     <h1 style="display: flex; justify-content: center;  font-family: 'Overpass', sans-serif; font-size: 300%;">Admin Dashboard</h1>
     <div class="tab">
-        <div class="card" style="width: 20rem; margin: 5%;">
-            <div class="card-body">
+
+        <div class="card" style="width: 20rem; margin: 5%; ">
+            <div class="card-body" style="display: flex; flex-direction: column;">
               <h5 class="card-title" style="font-size: x-large;"><strong>Add Category</strong></h5>
               <p class="card-text">Here you can add the category, specific set of products</p>
               <a style="margin-bottom: 2%;" href="{% url 'pos_admin_edit_cat' %}" class="btn btn-primary" style="background-color:   rgb(29, 255, 180); color:  black; border: none; font-size: large;">Edit Category</a>
@@ -24,7 +25,7 @@
             </div>
           </div>
           <div class="card" style="width: 20rem; margin: 5%;">
-            <div class="card-body">
+            <div class="card-body" style="display: flex; flex-direction: column;">
               <h5 class="card-title" style="font-size: x-large;"><strong>Add Product</strong></h5>
               <p class="card-text">Here you can add the products and prices of products.</p>
               <a style="margin-bottom: 2%;" href="{% url 'pos_admin_edit_product' %}" class="btn btn-primary" style="background-color:   rgb(29, 255, 180); color:  black; border: none; font-size: large;">Edit Product</a>
@@ -32,14 +33,21 @@
             </div>
           </div>
           <div class="card" style="width: 20rem; margin: 5%;">
-            <div class="card-body">
+            <div class="card-body" style="display: flex; flex-direction: column;">
               <h5 class="card-title" style="font-size: x-large;"><strong>Add Table</strong></h5>
               <p class="card-text">Here you can add tables present in your bussiness.</p>
-              <a style="margin-bottom: 2%;" href="{% url 'pos_admin_edit_tab' %}" class="btn btn-primary" style="background-color:   rgb(29, 255, 180); color:  black; border: none; font-size: large;">Edit Table</a>
-              <a href="{% url 'pos_admin_add_table' %}" class="btn btn-primary" style="background-color:   rgb(29, 255, 180); color:  black; border: none; font-size: large;">Go add table</a>
+              <a style="margin-bottom: 2%;" href="{% url 'pos_admin_edit_tab' %}" class="btn btn-primary" style="background-color:   rgb(29, 255, 180); color:  black; border: none; font-size: large; ">Edit Table</a>
+              <a href="{% url 'pos_admin_add_table' %}" class="btn btn-primary" style="background-color:   rgb(29, 255, 180); color:  black; border: none; font-size: large; ">Go add table</a>
             </div>
           </div>
-          
+          <div class="card" style="width: 20rem; margin: 5%;">
+            <div class="card-body">
+              <h5 class="card-title" style="font-size: x-large;"><strong>View Bill</strong></h5>
+              <p class="card-text">Here you can view past settled invoices/bills.</p>
+              <a style="margin-bottom: 2%;" href="" class="btn btn-primary" style="background-color:   rgb(29, 255, 180); color:  black; border: none; font-size: large; " onclick="alert('Currently This feature is not avaliable, contact supplier for help.')">View multiple bills</a>
+              <a href="{% url 'view_bill' %}" class="btn btn-primary" style="background-color:   rgb(29, 255, 180); color:  black; border: none; font-size: large; ">view single bill</a>
+            </div>
+          </div>
           
     </div>
     <div class="alert alert-info">For any kind updating, deleting, changing printer data contact supplier.<br>These features are under development.</div>
@@ -61,7 +69,7 @@
           border-radius: 2%;  
         width: 80%;
         padding: 2%;
-        text-decoration: none;
+        text-decoration: none; 
         color: black;
         border: none;
         font-size: larger;
@@ -70,6 +78,7 @@
         .tab{
             display: flex;
             flex-direction: row;
+            flex-wrap: wrap;
             width: 60%;
             margin: 2%;
         }

@@ -17,5 +17,7 @@ urlpatterns = [
     path('pos_admin_del_pro/<int:pk>/', del_pro , name="del_pro"), 
     path('pos_admin_del_tab/<int:pk>/', del_tab , name="del_tab"), 
     path('pos_admin_logout/', pos_admin_logout , name="pos_admin_logout"), 
+    path('pos_admin_reprint_bill/<int:pb>/<str:pd>/', pos_admin_reprint_bill , name="pos_admin_reprint_bill"), 
+    path('pos_admin_view_bill/', pos_admin_view_bill , name="view_bill"),  
 ]
 
